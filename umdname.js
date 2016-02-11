@@ -1,5 +1,5 @@
 // Filename: umdname.js  
-// Timestamp: 2016.02.11-01:55:30 (last modified)
+// Timestamp: 2016.02.11-10:51:38 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 //
 // official umd templates,
@@ -39,9 +39,11 @@ var umdname = module.exports = (function (o) {
     
     return estraverse.replace(umd_expression_ast, {
       leave: function leave(node, parent) {
-        if (node.type === 'MemberExpression' &&
+        if (parent.type === 'AssignmentExpression' &&
+            node.type === 'MemberExpression' &&
             node.object.name === global &&
             node.property) {
+
           node.property.name = namespace;
         }
         
