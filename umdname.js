@@ -1,5 +1,5 @@
 // Filename: umdname.js  
-// Timestamp: 2015.12.19-15:37:20 (last modified)
+// Timestamp: 2016.02.10-17:18:58 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 //
 // official umd templates,
@@ -52,9 +52,15 @@ var umdname = module.exports = (function (o) {
   o.content_withnamespace = function (content, namespace) {
     var ast = esprima.parse(content);
 
-    ast.body[0].expression.callee =
-      o.template_with_namespace(ast.body[0].expression.callee, namespace);
-
+    for (var o = 0; o < ast.body.length; o++) {
+      if (ast.body[o].type === 'CallExpression') {
+        ast.body[o].expression.callee =
+          o.template_with_namespace(ast.body[o].expression.callee, namespace);
+        
+        break;
+      }
+    }
+    
     return escodegen.generate(ast, {
       format: {
         indent: { style: '  ' },
