@@ -1,5 +1,5 @@
 // Filename: umdname.js  
-// Timestamp: 2016.02.10-17:18:58 (last modified)
+// Timestamp: 2016.02.11-01:55:30 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 //
 // official umd templates,
@@ -34,7 +34,8 @@ var umdname = module.exports = (function (o) {
   };
 
   o.template_with_namespace = function (umd_expression_ast, namespace) {
-    var global = umd_expression_ast.params[0].name;
+    var global = umd_expression_ast.params &&
+                 umd_expression_ast.params[0].name || 'root';
     
     return estraverse.replace(umd_expression_ast, {
       leave: function leave(node, parent) {
@@ -51,12 +52,13 @@ var umdname = module.exports = (function (o) {
   
   o.content_withnamespace = function (content, namespace) {
     var ast = esprima.parse(content);
-
-    for (var o = 0; o < ast.body.length; o++) {
-      if (ast.body[o].type === 'CallExpression') {
-        ast.body[o].expression.callee =
-          o.template_with_namespace(ast.body[o].expression.callee, namespace);
-        
+    
+    // this expression and function expression as args
+    for (var x = 0; x < ast.body.length; x++) {
+      if (ast.body[x].type === 'ExpressionStatement' &&
+          ast.body[x].expression.type === 'CallExpression') {
+        ast.body[x].expression.callee =
+          o.template_with_namespace(ast.body[x].expression.callee, namespace);
         break;
       }
     }
