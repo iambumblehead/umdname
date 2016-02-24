@@ -1,5 +1,5 @@
 // Filename: umdname.spec.js  
-// Timestamp: 2016.02.23-17:40:11 (last modified)
+// Timestamp: 2016.02.23-18:25:49 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>
 
 var umdname = require('../');
@@ -132,8 +132,9 @@ describe("rxjsname", function () {
 describe("umdbrowserify", function () {
   it("should adapt the browserify UMD boilerplate to use namespace 'speedracer'", function () {
     var content = umdname(umd_browserify, 'speedracer');
-    
+
     expect(/g.browserifyglobalname/gm.test(content)).toBe(false);    
     expect(/g.speedracer/gm.test(content)).toBe(true);     
   });
 });
+

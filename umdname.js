@@ -1,5 +1,5 @@
 // Filename: umdname.js  
-// Timestamp: 2016.02.23-17:38:29 (last modified)
+// Timestamp: 2016.02.23-18:01:37 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>  
 //
 // official umd templates,
@@ -41,8 +41,11 @@ var umdname = module.exports = (function (o) {
       leave: function leave(node, parent) {
         if (parent.type === 'AssignmentExpression' &&
             node.type === 'MemberExpression' &&
-            //node.object.name === global &&
-            node.property) {
+            node.property &&
+            (node.object.name === global ||
+             (parent.right &&
+              parent.right.type === 'CallExpression' &&
+              parent.right.callee.name === global))) {
           node.property.name = namespace;
         }
         
