@@ -1,5 +1,5 @@
 // Filename: umdname.spec.js  
-// Timestamp: 2016.02.11-10:51:49 (last modified)
+// Timestamp: 2016.02.23-17:40:11 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>
 
 var umdname = require('../');
@@ -86,6 +86,30 @@ var umd_rxall = [
   '}.call(this));'
 ].join('\n');
 
+// `$ browserify src/index.js -s global-name > dist/global-name.js`
+//
+var umd_browserify = [
+  '(function (f) {',
+  '  if (typeof exports === \'object\' && typeof module !== \'undefined\') {',
+  '    module.exports = f();',
+  '  } else if (typeof define === \'function\' && define.amd) {',
+  '    define([], f);',
+  '  } else {',
+  '    var g;',
+  '    if (typeof window !== \'undefined\') {',
+  '      g = window;',
+  '    } else if (typeof global !== \'undefined\') {',
+  '      g = global;',
+  '    } else if (typeof self !== \'undefined\') {',
+  '      g = self;',
+  '    } else {',
+  '      g = this;',
+  '    }',
+  '    g.browserifyglobalname = f();',
+  '  }',
+  '}(function () { }()));'
+].join('\n');
+
 describe("umdname", function () {
   it("should adapt the mustche.js UMD boilerplate to use namespace 'speedracer'", function () {
     var content = umdname(umd_mustache, 'speedracer');
@@ -101,7 +125,15 @@ describe("rxjsname", function () {
     var content = umdname(umd_rxall, 'speedracer');
 
     expect(/root.Rx/gm.test(content)).toBe(false);    
-    expect(/root.Rx/gm.test(content)).toBe(false);
     expect(/root.speedracer/gm.test(content)).toBe(true);     
+  });
+});
+
+describe("umdbrowserify", function () {
+  it("should adapt the browserify UMD boilerplate to use namespace 'speedracer'", function () {
+    var content = umdname(umd_browserify, 'speedracer');
+    
+    expect(/g.browserifyglobalname/gm.test(content)).toBe(false);    
+    expect(/g.speedracer/gm.test(content)).toBe(true);     
   });
 });
