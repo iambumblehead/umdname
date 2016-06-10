@@ -1,5 +1,5 @@
 // Filename: umdname.spec.js  
-// Timestamp: 2016.02.23-18:25:49 (last modified)
+// Timestamp: 2016.06.10-03:14:34 (last modified)
 // Author(s): bumblehead <chris@bumblehead.com>
 
 var umdname = require('../');
@@ -110,6 +110,53 @@ var umd_browserify = [
   '}(function () { }()));'
 ].join('\n');
 
+var umd_numeral = [
+    '(function () {',
+    '    var numeral;',
+    '    ',
+    '    // CommonJS module is defined',
+    '    if (hasModule) {',
+    '        module.exports = numeral;',
+    '    }',
+    '',
+    '    /*global ender:false */',
+    '    if (typeof ender === \'undefined\') {',
+    '        // here, `this` means `window` in the browser, or `global` on the server',
+    '        // add `numeral` as a global object via a string identifier,',
+    '        // for Closure Compiler \'advanced\' mode',
+    '        this[\'numeralglobalname\'] = numeral;',
+    '    }',
+    '',
+    '    /*global define:false */',
+    '    if (typeof define === \'function\' && define.amd) {',
+    '        define([], function () {',
+    '            return numeral;',
+    '        });',
+    '    }',
+    '}).call(this);',
+].join('\n');
+
+var umd_amplitude = [
+  '(function umd(require){',
+  '  if (\'object\' == typeof exports) {',
+  '    module.exports = require(\'1\');',
+  '  } else if (\'function\' == typeof define && define.amd) {',
+  '    define(function(){ return require(\'1\'); });',
+  '  } else {',
+  '    window[\'amplitudeglobalname\'] = require(\'1\');',
+  '  }',
+  '})((function outer(modules, cache, entries){',
+  '',
+  '  /**',
+  '   * Global',
+  '   */',
+  '',
+  '  var global = (function(){ return this; })();',
+  '',
+  '})({  }));'
+].join('\n');
+
+
 describe("umdname", function () {
   it("should adapt the mustche.js UMD boilerplate to use namespace 'speedracer'", function () {
     var content = umdname(umd_mustache, 'speedracer');
@@ -135,6 +182,24 @@ describe("umdbrowserify", function () {
 
     expect(/g.browserifyglobalname/gm.test(content)).toBe(false);    
     expect(/g.speedracer/gm.test(content)).toBe(true);     
+  });
+});
+
+describe("umdnumeral", function () {
+  it("should adapt the numeral UMD boilerplate to use namespace 'speedracer'", function () {
+    var content = umdname(umd_numeral, 'speedracer');
+
+    expect(/numeralglobalname/gm.test(content)).toBe(false);    
+    expect(/speedracer/gm.test(content)).toBe(true);     
+  });
+});
+
+describe("umdamplitude", function () {
+  it("should adapt the amplitude UMD boilerplate to use namespace 'speedracer'", function () {
+    var content = umdname(umd_amplitude, 'speedracer');
+
+    expect(/amplitudeglobalname/gm.test(content)).toBe(false);    
+    expect(/speedracer/gm.test(content)).toBe(true);     
   });
 });
 
