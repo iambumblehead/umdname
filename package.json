@@ -1,9 +1,9 @@
 {
   "name": "umdname",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "main": "umdname",
   "readmeFilename": "README.md",
-  "license" : "MIT",
+  "license": "MIT",
   "description": "adapt umd module types to alternative formats",
   "repository": {
     "type": "git",
@@ -14,15 +14,16 @@
     "commonjs",
     "adapt"
   ],
-  "dependencies" : {
-    "escodegen": "1.7.x",
-    "esprima": "2.7.x",
-    "estraverse": "4.1.x"
+  "dependencies": {
+    "escodegen": "^1.8.1",
+    "esprima": "^4.0.0",
+    "estraverse": "^4.2.0"
   },
-  "devDependencies" : {
-    "jasmine-node" : "~1.14.x"
+  "devDependencies": {
+    "jasmine": "2.5.3",
+    "jasmine-spec-reporter": "3.2.0"
   },
-  "scripts" : {
-    "test" : "node node_modules/jasmine-node/bin/jasmine-node --verbose test/"
-  }  
+  "scripts": {
+    "test": "node node_modules/jasmine/bin/jasmine.js --verbose"
+  }
 }
